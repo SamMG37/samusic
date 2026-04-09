@@ -1,82 +1,100 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace samusic.Services
 {
-
     public class SpotifyService
     {
-
         private readonly HttpClient client = new HttpClient();
 
         private string clientId = "213f0d754f974770833165fa60f6843b";
-
         private string clientSecret = "a5710ad8c5314647a133cb426c418800";
 
         public async Task<string> GetToken()
         {
-
             var auth = Convert.ToBase64String(
-
                 Encoding.UTF8.GetBytes(clientId + ":" + clientSecret)
-            
             );
 
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "https://accounts.spotify.com/api/token"
+            );
 
-            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", auth);
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Basic", auth);
 
-            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                {"grant_type","client_credentials"}
-            }
-            
+            request.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    { "grant_type", "client_credentials" }
+                }
             );
 
             var response = await client.SendAsync(request);
-
             var json = await response.Content.ReadAsStringAsync();
 
-            dynamic token = JsonConvert.DeserializeObject(json);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Spotify token request failed: " + json);
+            }
 
-            return token.access_token;
+            var tokenObject = JObject.Parse(json);
+            var accessToken = tokenObject["access_token"]?.ToString();
 
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                throw new Exception("Spotify token missing. Response was: " + json);
+            }
+
+            return accessToken;
         }
 
         public async Task<string> Search(string query)
         {
-
             var token = await GetToken();
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"https://api.spotify.com/v1/search?q={Uri.EscapeDataString(query)}&type=track"
+            );
 
-            var response = await client.GetAsync($"https://api.spotify.com/v1/search?q={query}&type=track&limit=25");
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
 
-            var result = await response.Content.ReadAsStringAsync();
+            var response = await client.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine(result);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Spotify search failed: " + json);
+            }
 
-            return result;
-
+            return json;
         }
 
         public async Task<string> GetTrending()
         {
-
             var token = await GetToken();
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                "https://api.spotify.com/v1/search?q=pop&type=track"
+            );
 
-            var response = await client.GetAsync("https://api.spotify.com/v1/browse/new-releases?limit=25");
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
 
-            var result = await response.Content.ReadAsStringAsync();
+            var response = await client.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine(result);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Spotify trending failed: " + json);
+            }
 
-            return result;
-
+            return json;
         }
-
     }
 }
