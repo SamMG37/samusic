@@ -8,29 +8,33 @@ namespace samusic.Services
     public class SpotifyService
     {
 
-        private HttpClient client = new HttpClient();
+        private readonly HttpClient client = new HttpClient();
 
-        private string clientId = "PUT CLIENT ID";
+        private string clientId = "213f0d754f974770833165fa60f6843b";
 
-        private string clientSecret = "PUT SECRET";
+        private string clientSecret = "a5710ad8c5314647a133cb426c418800";
 
         public async Task<string> GetToken()
         {
 
-            var auth = Convert.ToBase64String(Encoding.UTF8.GetBytes(clientId + ":" + clientSecret));
+            var auth = Convert.ToBase64String(
 
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
-
-            var request = new FormUrlEncodedContent(
-
-                new Dictionary<string, string>
-                {
-                    {"grant_type","client_credentials"}
-                }
+                Encoding.UTF8.GetBytes(clientId + ":" + clientSecret)
             
             );
 
-            var response = await client.PostAsync("https://accounts.spotify.com/api/token", request);
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", auth);
+
+            request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                {"grant_type","client_credentials"}
+            }
+            
+            );
+
+            var response = await client.SendAsync(request);
 
             var json = await response.Content.ReadAsStringAsync();
 
@@ -47,11 +51,13 @@ namespace samusic.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await client.GetAsync($"https://api.spotify.com/v1/search?q={query}&type=track&limit=25"
+            var response = await client.GetAsync($"https://api.spotify.com/v1/search?q={query}&type=track&limit=25");
 
-            );
+            var result = await response.Content.ReadAsStringAsync();
 
-            return await response.Content.ReadAsStringAsync();
+            Console.WriteLine(result);
+
+            return result;
 
         }
 
@@ -64,10 +70,13 @@ namespace samusic.Services
 
             var response = await client.GetAsync("https://api.spotify.com/v1/browse/new-releases?limit=25");
 
-            return await response.Content.ReadAsStringAsync();
+            var result = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(result);
+
+            return result;
 
         }
 
     }
-
 }

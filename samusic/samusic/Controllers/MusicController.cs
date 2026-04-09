@@ -16,11 +16,9 @@ namespace samusic.Controllers
 
         public async Task<IActionResult> Search(string query)
         {
-
             var results = await spotify.Search(query);
 
             return Content(results, "application/json");
-
         }
 
         public async Task<IActionResult> Trending()

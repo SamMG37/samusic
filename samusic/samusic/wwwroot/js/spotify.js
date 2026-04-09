@@ -1,76 +1,90 @@
 ﻿window.onload = function () {
     loadTrending();
-}
-
-window.searchMusic = async function () {
-    let query = document.getElementById("searchBox").value;
-    let response = await fetch("/Music/Search?query=" + query);
-    let data = await response.json();
-    let tracks = JSON.parse(data);
-    displayTracks(tracks.tracks.items);
-}
-
-window.loadTrending = async function () {
-    let response = await fetch("/Music/Trending");
-    let data = await response.json();
-    let albums = JSON.parse(data);
-    displayTrending(albums.albums.items);
-}
+};
 
 async function searchMusic() {
 
-    let query =
-        document.getElementById(
-            "searchBox"
-        ).value;
+    let query = document.getElementById("searchBox").value;
 
-    let response = await fetch(
-            "/Music/Search?query=" + query
-        );
+    let response = await fetch("/Music/Search?query=" + query);
 
-    let text = await response.text();
+    let data = await response.json();
 
-    let tracks = JSON.parse(text);
+    console.log(data);
 
-    displayTracks(tracks.tracks.items
-    );
+    displayTracks(data.tracks.items);
+
+    if (data.tracks && data.tracks.items) {
+        displayTracks(data.tracks.items);
+    }
+    else {
+        console.log("Spotify returned:", data);
+    }
+
+}
+
+async function loadTrending() {
+
+    let response = await fetch("/Music/Trending");
+
+    let data = await response.json();
+
+    console.log(data);
+
+    displayTrending(data.albums.items);
+
+    if (data.albums && data.albums.items) {
+        displayTrending(data.albums.items);
+    }
+    else {
+        console.log("Spotify returned:", data);
+    }
+
+}
+
+function displayTracks(tracks) {
+
+    let results =
+        document.getElementById("results");
+
+    results.innerHTML = "<h2>Search Results</h2>";
+
+    tracks.forEach(track => {
+
+        let card = document.createElement("div");
+
+        card.className = "musicCard";
+
+        card.innerHTML = `<img src="${track.album.images[0].url}" width="150">
+        <h3>${track.name}</h3>
+        <p>${track.artists[0].name}</p>`;
+
+        card.onclick = function ()
+        {
+            showDetails(track);
+        };
+
+        results.appendChild(card);
+
+    });
 
 }
 
 function displayTrending(albums) {
 
-    let results =
-        document.getElementById(
-            "results"
-        );
+    let results = document.getElementById("results");
 
-    results.innerHTML =
-        "<h2>Trending Music</h2>";
+    results.innerHTML = "<h2>Trending Music</h2>";
 
     albums.forEach(album => {
 
-        let card =
-            document.createElement("div");
+        let card = document.createElement("div");
 
-        card.style.border =
-            "1px solid grey";
+        card.className = "musicCard";
 
-        card.style.padding =
-            "10px";
-
-        card.style.margin =
-            "10px";
-
-        card.style.width =
-            "200px";
-
-        card.style.display =
-            "inline-block";
-
-        card.innerHTML = `<img src="${album.images[0].url}"width="150">
+        card.innerHTML = `<img src="${album.images[0].url}" width="150">
         <h3>${album.name}</h3>
-            <p>${album.artists[0].name}</p>
-        `;
+        <p>${album.artists[0].name}</p>`;
 
         results.appendChild(card);
 
@@ -80,11 +94,17 @@ function displayTrending(albums) {
 
 function showDetails(track) {
 
-    document.getElementById("details").innerHTML = <><h2>${track.name}</h2><img src="${track.album.images[0].url}" width="250">
-        <p>Artist:${track.artists[0].name}</p>
-        <p>Album:${track.album.name}</p>
-        <p>Release:${track.album.release_date}</p>
-        <p>Popularity:${track.popularity}</p>
-        <a href="${track.external_urls.spotify}" target="_blank">Open Spotify</a>`;
-    }; </></>
+    document.getElementById("details").innerHTML = `<h2>${track.name}</h2>
+        <img src="${track.album.images[0].url}" width="250">
+
+        <p><b>Artist:</b>${track.artists[0].name}</p>
+
+        <p><b>Album:</b>${track.album.name}</p>
+
+        <p><b>Release:</b>${track.album.release_date}</p>
+
+        <p><b>Popularity:</b>${track.popularity}</p>
+
+        <a href="${track.external_urls.spotify}"target="_blank">Open in Spotify</a>`;
+
 }
