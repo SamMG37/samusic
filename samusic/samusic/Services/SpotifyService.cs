@@ -97,5 +97,27 @@ namespace samusic.Services
 
             return json;
         }
+
+        public async Task<string> GetNewReleases()
+        {
+            var token = await GetToken();
+
+            var request = new HttpRequestMessage(
+                HttpMethod.Get, "https://api.spotify.com/v1/browse/new-releases?limit=12"
+            );
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.SendAsync(request);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Spotify new releases failed: " + json);
+            }
+
+            return json;
+        }
     }
 }
+

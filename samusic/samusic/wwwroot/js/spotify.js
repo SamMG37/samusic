@@ -140,6 +140,8 @@ function showDetails(track) {
     const releaseDate = track.album?.release_date ?? "Unknown";
     const spotifyUrl = track.external_urls?.spotify ?? "#";
 
+    saveRecentTrack(track);
+
     document.getElementById("detailsSection").style.display = "block";
 
     document.getElementById("details").innerHTML = `
@@ -181,14 +183,54 @@ async function saveFavourite(track) {
         });
 
         if (!response.ok) {
-            alert("You may need to log in before saving favourites.");
+            showToast("You may need to log in before saving favourites.", "error");
             return;
         }
 
         const data = await response.json();
-        alert(data.message);
+        showToast(data.message, data.success ? "success" : "error");
     } catch (error) {
         console.error("Save favourite failed:", error);
-        alert("Could not save favourite.");
+        showToast("Could not save favourite.", "error");
     }
+}
+
+function saveRecentTrack(track) {
+    const recentTrack = {
+        spotifyTrackId: track.id,
+        trackName: track.name,
+        artistNames: track.artists?.map(a => a.name).join(", ") ?? "Unknown artist",
+        albumImageUrl: track.album?.images?.length > 0 ? track.album.images[0].url : "",
+        spotifyUrl: track.external_urls?.spotify ?? ""
+    };
+
+    let recentTracks = [];
+
+    try {
+        recentTracks = JSON.parse(localStorage.getItem("recentTracks")) || [];
+    } catch {
+        recentTracks = [];
+    }
+
+    recentTracks = recentTracks.filter(t => t.spotifyTrackId !== recentTrack.spotifyTrackId);
+    recentTracks.unshift(recentTrack);
+
+    if (recentTracks.length > 8) {
+        recentTracks = recentTracks.slice(0, 8);
+    }
+
+    localStorage.setItem("recentTracks", JSON.stringify(recentTracks));
+}
+
+function showToast(message, type = "success") {
+    const toast = document.getElementById("toastMessage");
+
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.className = `toastMessage show ${type}`;
+
+    setTimeout(() => {
+        toast.className = "toastMessage";
+    }, 2500);
 }

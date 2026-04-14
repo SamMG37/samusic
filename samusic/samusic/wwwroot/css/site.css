@@ -1,6 +1,13 @@
+:root {
+    --samusic-purple: #7c3aed;
+    --samusic-purple-dark: #6827a1;
+    --samusic-purple-light: #9a57c9;
+}
+
 body {
     background: #f3f3f3;
 }
+
 
 .musicPage {
     max-width: 1400px;
@@ -13,6 +20,7 @@ body {
         margin-bottom: 20px;
     }
 
+/* Searching for music features/attributes */
 .searchBarArea {
     display: flex;
     gap: 10px;
@@ -71,6 +79,7 @@ body {
         border-radius: 10px;
     }
 
+/* Music Card featuers */
 .musicCard {
     background: white;
     border-radius: 12px;
@@ -90,6 +99,7 @@ body {
         object-fit: cover;
     }
 
+/* Horizontal scroll music cards */
 .carouselCard {
     min-width: 220px;
     max-width: 220px;
@@ -101,6 +111,7 @@ body {
         height: 220px;
     }
 
+/* Search result cards shown */
 .searchResultsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -116,6 +127,8 @@ body {
         height: 220px;
     }
 
+
+  /* Details within card */
 .musicCard h4 {
     font-size: 1.6rem;
     margin: 12px 12px 6px 12px;
@@ -158,11 +171,12 @@ body {
         margin-bottom: 12px;
     }
 
+  /* 'Save to favourites' button feature */
 .saveButton {
     margin-top: 16px;
     padding: 12px 18px;
     border: none;
-    background: #1db954;
+    background: #6827a1;
     color: white;
     border-radius: 8px;
     cursor: pointer;
@@ -170,5 +184,156 @@ body {
 }
 
     .saveButton:hover {
-        background: #169944;
+        background: var(--samusic-purple-light);
     }
+
+/* Message pop up when music card is saved */
+.toastMessage {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    background: #111;
+    color: white;
+    padding: 14px 18px;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    font-size: 0.98rem;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 9999;
+}
+
+    .toastMessage.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .toastMessage.success {
+        background: #1db954;
+    }
+
+    .toastMessage.error {
+        background: #d64545;
+    }
+
+/* Button in homepage for 'Go to Music' section 
+    if signed in, shows favourites and searched tracks cards
+*/
+.homeHero {
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #111 0%, #222 100%);
+    color: white;
+    border-radius: 18px;
+    margin: 20px auto 40px auto;
+    max-width: 1200px;
+}
+
+.homeHeroContent {
+    max-width: 700px;
+}
+
+.homeHero h1 {
+    font-size: 3.2rem;
+    margin-bottom: 16px;
+}
+
+.homeHero p {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    color: #f1f1f1;
+}
+
+.homeButtons {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.homeButton {
+    display: inline-block;
+    padding: 14px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.primaryButton {
+    background: var(--samusic-purple);
+    color: white;
+}
+
+    .primaryButton:hover {
+        background: var(--samusic-purple-light);
+        color: white;
+    }
+
+.secondaryButton {
+    background: white;
+    color: #111;
+}
+
+    .secondaryButton:hover {
+        background: var(--samusic-purple-light);
+        color: #111;
+    }
+
+
+/* Feature alteration of login/register area */
+
+
+a {
+    color: var(--samusic-purple);
+}
+
+    a:hover {
+        color: var(--samusic-purple-light);
+    }
+
+.btn-primary {
+    background-color: var(--samusic-purple);
+    border-color: var(--samusic-purple);
+}
+
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        background-color: var(--samusic-purple-dark);
+        border-color: var(--samusic-purple-dark);
+    }
+
+.btn-outline-primary {
+    color: var(--samusic-purple);
+    border-color: var(--samusic-purple);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--samusic-purple-light);
+        border-color: var(--samusic-purple);
+        color: white;
+    }
+
+.form-check-input:checked {
+    background-color: var(--samusic-purple);
+    border-color: var(--samusic-purple);
+}
+
+.form-check-input:focus,
+.form-control:focus {
+    border-color: var(--samusic-purple);
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.2);
+}
+
+.nav-pills .nav-link.active,
+.page-item.active .page-link {
+    background-color: var(--samusic-purple);
+    border-color: var(--samusic-purple);
+}
+
+.link-primary,
+.text-primary {
+    color: var(--samusic-purple) !important;
+}

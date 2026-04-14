@@ -1,7 +1,38 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
+    bool isLoggedIn = User.Identity?.IsAuthenticated ?? false;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Samusic</h1>
+<div class="homeHero">
+    <div class="homeHeroContent">
+        <h1>Welcome to Samusic</h1>
+        <p>
+            Discover music by genre, search for tracks, and build your own favourites collection.
+        </p>
+
+        <div class="homeButtons">
+            <a asp-controller="Music" asp-action="Index" class="homeButton primaryButton">
+                Go to Music
+            </a>
+
+            @if (isLoggedIn)
+            {
+                <a asp-controller="Music" asp-action="Favourites" class="homeButton secondaryButton">
+                    Go to your favourites
+                </a>
+            }
+        </div>
+    </div>
 </div>
+
+@if (isLoggedIn)
+{
+    <section id="recentSection" class="contentSection" style="display: none;">
+        <div class="sectionHeader">
+            <h2>Recently viewed tracks</h2>
+        </div>
+        <div id="recentTracks" class="searchResultsGrid"></div>
+    </section>
+
+    <script src="~/js/home.js"></script>
+}
