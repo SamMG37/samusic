@@ -1,6 +1,7 @@
-﻿using System.Net.Http.Headers;
-using System.Text;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace samusic.Services
 {
@@ -74,13 +75,13 @@ namespace samusic.Services
             return json;
         }
 
-        public async Task<string> GetTrending()
+        public async Task<string> GetTracksByGenre(string genre)
         {
             var token = await GetToken();
 
             var request = new HttpRequestMessage(
                 HttpMethod.Get,
-                "https://api.spotify.com/v1/search?q=pop&type=track"
+                $"https://api.spotify.com/v1/search?q=genre:\"{Uri.EscapeDataString(genre)}\"&type=track&limit=10"
             );
 
             request.Headers.Authorization =
@@ -91,7 +92,7 @@ namespace samusic.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception("Spotify trending failed: " + json);
+                throw new Exception("Spotify genre search failed: " + json);
             }
 
             return json;

@@ -1,0 +1,32 @@
+﻿@model List<samusic.Models.FavouriteSong>
+
+@{
+    ViewData["Title"] = "My Favourites";
+}
+
+<div class="musicPage">
+    <h1>My Favourites</h1>
+
+    @if (!Model.Any())
+    {
+        <p>You have not saved any songs yet.</p>
+    }
+    else
+    {
+        <div class="searchResultsGrid">
+            @foreach (var song in Model)
+            {
+                <div class="musicCard searchCard">
+                    <img src="@song.AlbumImageUrl" alt="@song.TrackName" />
+                    <h4>@song.TrackName</h4>
+                    <p>@song.ArtistNames</p>
+                    <p><strong>Album:</strong> @song.AlbumName</p>
+                    <p><strong>Release date:</strong> @song.ReleaseDate</p>
+                    <p>
+                        <a href="@song.SpotifyUrl" target="_blank">Open in Spotify</a>
+                    </p>
+                </div>
+            }
+        </div>
+    }
+</div>

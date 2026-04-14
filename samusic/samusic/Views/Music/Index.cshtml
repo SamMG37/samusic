@@ -2,12 +2,47 @@
     ViewData["Title"] = "Music";
 }
 
-<h1>Music Index</h1>
+<div class="musicPage">
+    <h1>Music Index</h1>
 
-<input id="searchBox" placeholder="Search songs" />
-<button type="button" id="searchButton">Search</button>
+    <div class="searchBarArea">
+        <input id="searchBox" placeholder="Search songs" />
+        <button type="button" id="searchButton">Search</button>
+    </div>
 
-<div id="results"></div>
-<div id="details"></div>
+    <section id="searchSection" class="contentSection" style="display: none;">
+        <div class="sectionHeader">
+            <h2>Search Results</h2>
+        </div>
+        <div id="results" class="searchResultsGrid"></div>
+    </section>
+
+    <section id="detailsSection" class="contentSection" style="display: none;">
+        <div class="sectionHeader">
+            <h2>Selected Track</h2>
+        </div>
+        <div id="details"></div>
+    </section>
+
+    <section class="contentSection">
+        <div class="sectionHeader">
+            <h2>Browse by Genre</h2>
+        </div>
+
+        <h3>Pop</h3>
+        <div id="genre-pop" class="genreRow"></div>
+
+        <h3>Hip-Hop</h3>
+        <div id="genre-hip-hop" class="genreRow"></div>
+
+        <h3>Metal</h3>
+        <div id="genre-metal" class="genreRow"></div>
+
+        <h3>Rock</h3>
+        <div id="genre-rock" class="genreRow"></div>
+    </section>
+</div>
+
+<div id="toastMessage" class="toastMessage"></div>
 
 <script src="~/js/spotify.js"></script>

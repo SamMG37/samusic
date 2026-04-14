@@ -1,19 +1,30 @@
 ﻿window.onload = function () {
     const button = document.getElementById("searchButton");
+    const searchBox = document.getElementById("searchBox");
 
     if (button) {
         button.addEventListener("click", searchMusic);
     }
 
-    loadTrending();
+    if (searchBox) {
+        searchBox.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                searchMusic();
+            }
+        });
+    }
+
+    loadGenreRow("pop", "genre-pop");
+    loadGenreRow("hip-hop", "genre-hip-hop");
+    loadGenreRow("metal", "genre-metal");
+    loadGenreRow("rock", "genre-rock");
 };
 
 async function searchMusic() {
     const query = document.getElementById("searchBox").value.trim();
 
-    if (!query) {
-        return;
-    }
+    if (!query) return;
 
     try {
         const response = await fetch("/Music/Search?query=" + encodeURIComponent(query));
@@ -21,63 +32,96 @@ async function searchMusic() {
         if (!response.ok) {
             const text = await response.text();
             console.error("Search request failed:", text);
-            document.getElementById("results").innerHTML = "<h2>Search could not be completed.</h2>";
+            document.getElementById("searchSection").style.display = "block";
+            document.getElementById("results").innerHTML = "<p>Search could not be completed.</p>";
             return;
         }
 
         const data = await response.json();
-        console.log("Search response:", JSON.stringify(data, null, 2));
 
         if (data.tracks && data.tracks.items && data.tracks.items.length > 0) {
-            displayTracks(data.tracks.items, "Search Results");
+            document.getElementById("searchSection").style.display = "block";
+            displayTracks(data.tracks.items);
+            document.getElementById("searchSection").scrollIntoView({ behavior: "smooth", block: "start" });
         } else {
-            document.getElementById("results").innerHTML = "<h2>No search results found.</h2>";
+            document.getElementById("searchSection").style.display = "block";
+            document.getElementById("results").innerHTML = "<p>No search results found.</p>";
         }
     } catch (error) {
         console.error("Search failed:", error);
-        document.getElementById("results").innerHTML = "<h2>Search could not be completed.</h2>";
+        document.getElementById("searchSection").style.display = "block";
+        document.getElementById("results").innerHTML = "<p>Search could not be completed.</p>";
     }
 }
 
-async function loadTrending() {
+async function loadGenreRow(genre, containerId) {
     try {
-        const response = await fetch("/Music/Trending");
+        const response = await fetch("/Music/Genre?genre=" + encodeURIComponent(genre));
 
         if (!response.ok) {
             const text = await response.text();
-            console.error("Trending request failed:", text);
-            document.getElementById("results").innerHTML = "<h2>Trending music could not be loaded.</h2>";
+            console.error("Genre request failed:", text);
             return;
         }
 
         const data = await response.json();
-        console.log("Trending response:", JSON.stringify(data, null, 2));
 
-        if (data.tracks && data.tracks.items && data.tracks.items.length > 0) {
-            displayTracks(data.tracks.items, "Trending Music");
-        } else {
-            document.getElementById("results").innerHTML = "<h2>Trending music could not be loaded.</h2>";
+        if (data.tracks && data.tracks.items) {
+            displayGenreAlbums(data.tracks.items, containerId);
         }
     } catch (error) {
-        console.error("Trending failed:", error);
-        document.getElementById("results").innerHTML = "<h2>Trending music could not be loaded.</h2>";
+        console.error("Genre load failed:", error);
     }
 }
 
-function displayTracks(tracks, headingText) {
+function displayGenreAlbums(tracks, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    const seenAlbums = new Set();
+
+    tracks.forEach(track => {
+        if (!track.album || !track.album.id || seenAlbums.has(track.album.id)) {
+            return;
+        }
+
+        seenAlbums.add(track.album.id);
+
+        const card = document.createElement("div");
+        card.className = "musicCard carouselCard";
+
+        const imageUrl = track.album?.images?.length > 0 ? track.album.images[0].url : "";
+        const artistNames = track.artists?.map(a => a.name).join(", ") ?? "Unknown artist";
+
+        card.innerHTML = `
+            <img src="${imageUrl}" alt="${track.album.name}">
+            <h4>${track.album.name}</h4>
+            <p>${artistNames}</p>
+        `;
+
+        card.addEventListener("click", function () {
+            showDetails(track);
+        });
+
+        container.appendChild(card);
+    });
+}
+
+function displayTracks(tracks) {
     const results = document.getElementById("results");
-    results.innerHTML = `<h2>${headingText}</h2>`;
+    results.innerHTML = "";
 
     tracks.forEach(track => {
         const card = document.createElement("div");
-        card.className = "musicCard";
+        card.className = "musicCard searchCard";
 
         const imageUrl = track.album?.images?.length > 0 ? track.album.images[0].url : "";
+        const artistNames = track.artists?.map(a => a.name).join(", ") ?? "Unknown artist";
 
         card.innerHTML = `
-            <img src="${imageUrl}" width="150">
-            <h3>${track.name}</h3>
-            <p>${track.artists.map(a => a.name).join(", ")}</p>
+            <img src="${imageUrl}" alt="${track.name}">
+            <h4>${track.name}</h4>
+            <p>${artistNames}</p>
         `;
 
         card.addEventListener("click", function () {
@@ -88,16 +132,63 @@ function displayTracks(tracks, headingText) {
     });
 }
 
+
 function showDetails(track) {
     const imageUrl = track.album?.images?.length > 0 ? track.album.images[0].url : "";
+    const artistNames = track.artists?.map(a => a.name).join(", ") ?? "Unknown artist";
+    const albumName = track.album?.name ?? "Unknown album";
+    const releaseDate = track.album?.release_date ?? "Unknown";
+    const spotifyUrl = track.external_urls?.spotify ?? "#";
+
+    document.getElementById("detailsSection").style.display = "block";
 
     document.getElementById("details").innerHTML = `
-        <h2>${track.name}</h2>
-        <img src="${imageUrl}" width="250">
-        <p><b>Artist:</b> ${track.artists.map(a => a.name).join(", ")}</p>
-        <p><b>Album:</b> ${track.album.name}</p>
-        <p><b>Release date:</b> ${track.album.release_date}</p>
-        <p><b>Popularity:</b> ${track.popularity}</p>
-        <a href="${track.external_urls.spotify}" target="_blank">Open in Spotify</a>
+        <div class="detailsCard">
+            <h2>${track.name}</h2>
+            <img src="${imageUrl}" alt="${track.name}">
+            <p><strong>Artist:</strong> ${artistNames}</p>
+            <p><strong>Album:</strong> ${albumName}</p>
+            <p><strong>Release date:</strong> ${releaseDate}</p>
+            <p><a href="${spotifyUrl}" target="_blank">Open in Spotify</a></p>
+            <button type="button" class="saveButton" onclick="saveFavourite(${JSON.stringify(track).replace(/"/g, '&quot;')})">
+                Save to favourites
+            </button>
+        </div>
     `;
+
+    document.getElementById("detailsSection").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+
+async function saveFavourite(track) {
+    const favourite = {
+        spotifyTrackId: track.id,
+        trackName: track.name,
+        artistNames: track.artists?.map(a => a.name).join(", ") ?? "Unknown artist",
+        albumName: track.album?.name ?? "",
+        albumImageUrl: track.album?.images?.length > 0 ? track.album.images[0].url : "",
+        spotifyUrl: track.external_urls?.spotify ?? "",
+        releaseDate: track.album?.release_date ?? ""
+    };
+
+    try {
+        const response = await fetch("/Music/SaveFavourite", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(favourite)
+        });
+
+        if (!response.ok) {
+            alert("You may need to log in before saving favourites.");
+            return;
+        }
+
+        const data = await response.json();
+        alert(data.message);
+    } catch (error) {
+        console.error("Save favourite failed:", error);
+        alert("Could not save favourite.");
+    }
 }
