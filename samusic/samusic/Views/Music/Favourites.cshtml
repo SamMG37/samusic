@@ -7,6 +7,13 @@
 <div class="musicPage">
     <h1>My Favourites</h1>
 
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="pageMessage successMessage">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
     @if (!Model.Any())
     {
         <p>You have not saved any songs yet.</p>
@@ -22,9 +29,19 @@
                     <p>@song.ArtistNames</p>
                     <p><strong>Album:</strong> @song.AlbumName</p>
                     <p><strong>Release date:</strong> @song.ReleaseDate</p>
-                    <p>
-                        <a href="@song.SpotifyUrl" target="_blank">Open in Spotify</a>
-                    </p>
+
+                    <div class="favouriteCardActions">
+                        <a href="@song.SpotifyUrl" target="_blank" class="openSpotifyLink">
+                            Open in Spotify
+                        </a>
+
+                        <form asp-controller="Music" asp-action="RemoveFavourite" method="post">
+                            <input type="hidden" name="id" value="@song.Id" />
+                            <button type="submit" class="removeButton">
+                                Remove from favourites
+                            </button>
+                        </form>
+                    </div>
                 </div>
             }
         </div>

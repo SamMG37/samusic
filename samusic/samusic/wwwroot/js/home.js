@@ -1,14 +1,21 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-    loadRecentTracks();
+    loadRecentSearchedTracks();
+
+    const clearButton = document.getElementById("clearRecentButton");
+
+    if (clearButton) {
+        clearButton.addEventListener("click", clearRecentSearchedTracks);
+    }
 });
 
-function loadRecentTracks() {
+function loadRecentSearchedTracks() {
     const section = document.getElementById("recentSection");
     const container = document.getElementById("recentTracks");
+    const clearButton = document.getElementById("clearRecentButton");
 
     if (!section || !container) return;
 
-    const stored = localStorage.getItem("recentTracks");
+    const stored = localStorage.getItem("recentSearchedTracks");
 
     if (!stored) {
         section.style.display = "none";
@@ -32,6 +39,10 @@ function loadRecentTracks() {
     section.style.display = "block";
     container.innerHTML = "";
 
+    if (clearButton) {
+        clearButton.style.display = "inline-block";
+    }
+
     tracks.forEach(track => {
         const card = document.createElement("div");
         card.className = "musicCard searchCard";
@@ -52,4 +63,19 @@ function loadRecentTracks() {
 
         container.appendChild(card);
     });
+}
+
+function clearRecentSearchedTracks() {
+    localStorage.removeItem("recentSearchedTracks");
+
+    const section = document.getElementById("recentSection");
+    const container = document.getElementById("recentTracks");
+
+    if (container) {
+        container.innerHTML = "";
+    }
+
+    if (section) {
+        section.style.display = "none";
+    }
 }

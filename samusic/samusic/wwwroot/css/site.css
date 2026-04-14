@@ -62,6 +62,7 @@ body {
         margin: 0;
     }
 
+/* Horizontal scroll music cards for genres list */
 .genreRow {
     display: flex;
     gap: 16px;
@@ -336,4 +337,66 @@ a {
 .link-primary,
 .text-primary {
     color: var(--samusic-purple) !important;
+}
+
+/* Formatting features in removing favourites button
+    and card action it has
+
+*/
+.removeButton {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border: none;
+    background: #d64545;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+    .removeButton:hover {
+        background: #a12f2f;
+    }
+
+.favouriteCardActions {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pageMessage {
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.successMessage {
+    background: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #c4b5fd;
+}
+
+/* Button to remove recent searches, clear up home page space*/
+.recentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.clearRecentButton {
+    padding: 10px 14px;
+    border: none;
+    background: #7c3aed;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.clearRecentButton:hover {
+    background: #6d28d9;
 }

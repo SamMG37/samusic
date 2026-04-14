@@ -42,6 +42,7 @@ async function searchMusic() {
         if (data.tracks && data.tracks.items && data.tracks.items.length > 0) {
             document.getElementById("searchSection").style.display = "block";
             displayTracks(data.tracks.items);
+            saveRecentSearches(data.tracks.items);
             document.getElementById("searchSection").scrollIntoView({ behavior: "smooth", block: "start" });
         } else {
             document.getElementById("searchSection").style.display = "block";
@@ -140,7 +141,6 @@ function showDetails(track) {
     const releaseDate = track.album?.release_date ?? "Unknown";
     const spotifyUrl = track.external_urls?.spotify ?? "#";
 
-    saveRecentTrack(track);
 
     document.getElementById("detailsSection").style.display = "block";
 
@@ -195,31 +195,35 @@ async function saveFavourite(track) {
     }
 }
 
-function saveRecentTrack(track) {
-    const recentTrack = {
+function saveRecentSearches(tracks) {
+    if (!tracks || tracks.length === 0) return;
+
+    const mappedTracks = tracks.slice(0, 8).map(track => ({
         spotifyTrackId: track.id,
         trackName: track.name,
         artistNames: track.artists?.map(a => a.name).join(", ") ?? "Unknown artist",
         albumImageUrl: track.album?.images?.length > 0 ? track.album.images[0].url : "",
         spotifyUrl: track.external_urls?.spotify ?? ""
-    };
+    }));
 
-    let recentTracks = [];
+    let recentSearchedTracks = [];
 
     try {
-        recentTracks = JSON.parse(localStorage.getItem("recentTracks")) || [];
+        recentSearchedTracks = JSON.parse(localStorage.getItem("recentSearchedTracks")) || [];
     } catch {
-        recentTracks = [];
+        recentSearchedTracks = [];
     }
 
-    recentTracks = recentTracks.filter(t => t.spotifyTrackId !== recentTrack.spotifyTrackId);
-    recentTracks.unshift(recentTrack);
+    mappedTracks.reverse().forEach(track => {
+        recentSearchedTracks = recentSearchedTracks.filter(t => t.spotifyTrackId !== track.spotifyTrackId);
+        recentSearchedTracks.unshift(track);
+    });
 
-    if (recentTracks.length > 8) {
-        recentTracks = recentTracks.slice(0, 8);
+    if (recentSearchedTracks.length > 8) {
+        recentSearchedTracks = recentSearchedTracks.slice(0, 8);
     }
 
-    localStorage.setItem("recentTracks", JSON.stringify(recentTracks));
+    localStorage.setItem("recentSearchedTracks", JSON.stringify(recentSearchedTracks));
 }
 
 function showToast(message, type = "success") {

@@ -66,6 +66,34 @@ namespace samusic.Controllers
         }
 
         [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RemoveFavourite(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var favourite = context.FavouriteSongs
+                .FirstOrDefault(f => f.Id == id && f.UserId == userId);
+
+            if (favourite == null)
+            {
+                return NotFound();
+            }
+
+            context.FavouriteSongs.Remove(favourite);
+            context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Song removed from favourites.";
+
+            return RedirectToAction("Favourites");
+        }
+
+        [Authorize]
         public IActionResult Favourites()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

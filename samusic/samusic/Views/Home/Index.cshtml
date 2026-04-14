@@ -28,8 +28,11 @@
 @if (isLoggedIn)
 {
     <section id="recentSection" class="contentSection" style="display: none;">
-        <div class="sectionHeader">
-            <h2>Recently viewed tracks</h2>
+        <div class="sectionHeader recentHeader">
+            <h2>Recently searched tracks</h2>
+            <button type="button" id="clearRecentButton" class="clearRecentButton">
+                Clear recent searches
+            </button>
         </div>
         <div id="recentTracks" class="searchResultsGrid"></div>
     </section>
