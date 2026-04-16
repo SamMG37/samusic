@@ -1,0 +1,36 @@
+﻿@model List<samusic.Models.TrackReview>
+
+@{
+    ViewData["Title"] = "My Reviews";
+}
+
+<div class="musicPage">
+    <h1>My Reviews</h1>
+
+    @if (!Model.Any())
+    {
+        <p>You have not written any reviews yet.</p>
+    }
+    else
+    {
+        <div class="reviewList">
+            @foreach (var review in Model)
+            {
+                <div class="reviewCard">
+                    <h3>@review.TrackName</h3>
+                    <p><strong>Artist:</strong> @review.ArtistNames</p>
+                    <p><strong>Album:</strong> @review.AlbumName</p>
+                    <p class="reviewStars">
+                        @(new string('★', review.Rating))@(new string('☆', 5 - review.Rating))
+                    </p>
+                    <p>@review.Comment</p>
+                    <p>
+                        <a asp-controller="Music" asp-action="Reviews" asp-route-trackId="@review.SpotifyTrackId">
+                            View all reviews for this track
+                        </a>
+                    </p>
+                </div>
+            }
+        </div>
+    }
+</div>

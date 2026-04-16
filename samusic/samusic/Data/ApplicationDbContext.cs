@@ -12,5 +12,7 @@ namespace samusic.Data
         }
 
         public DbSet<FavouriteSong> FavouriteSongs { get; set; }
+
+        public DbSet<TrackReview> TrackReviews { get; set; }
     }
 }

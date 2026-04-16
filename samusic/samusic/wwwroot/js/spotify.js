@@ -75,6 +75,31 @@ async function loadGenreRow(genre, containerId) {
     }
 }
 
+function displayTracks(tracks) {
+    const results = document.getElementById("results");
+    results.innerHTML = "";
+
+    tracks.forEach(track => {
+        const card = document.createElement("div");
+        card.className = "musicCard searchCard";
+
+        const imageUrl = track.album?.images?.length > 0 ? track.album.images[0].url : "";
+        const artistNames = track.artists?.map(a => a.name).join(", ") ?? "Unknown artist";
+
+        card.innerHTML = `
+            <img src="${imageUrl}" alt="${track.name}">
+            <h4>${track.name}</h4>
+            <p>${artistNames}</p>
+        `;
+
+        card.addEventListener("click", function () {
+            showDetails(track);
+        });
+
+        results.appendChild(card);
+    });
+}
+
 function displayGenreAlbums(tracks, containerId) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -108,32 +133,6 @@ function displayGenreAlbums(tracks, containerId) {
     });
 }
 
-function displayTracks(tracks) {
-    const results = document.getElementById("results");
-    results.innerHTML = "";
-
-    tracks.forEach(track => {
-        const card = document.createElement("div");
-        card.className = "musicCard searchCard";
-
-        const imageUrl = track.album?.images?.length > 0 ? track.album.images[0].url : "";
-        const artistNames = track.artists?.map(a => a.name).join(", ") ?? "Unknown artist";
-
-        card.innerHTML = `
-            <img src="${imageUrl}" alt="${track.name}">
-            <h4>${track.name}</h4>
-            <p>${artistNames}</p>
-        `;
-
-        card.addEventListener("click", function () {
-            showDetails(track);
-        });
-
-        results.appendChild(card);
-    });
-}
-
-
 function showDetails(track) {
     const imageUrl = track.album?.images?.length > 0 ? track.album.images[0].url : "";
     const artistNames = track.artists?.map(a => a.name).join(", ") ?? "Unknown artist";
@@ -152,8 +151,13 @@ function showDetails(track) {
             <p><strong>Album:</strong> ${albumName}</p>
             <p><strong>Release date:</strong> ${releaseDate}</p>
             <p><a href="${spotifyUrl}" target="_blank">Open in Spotify</a></p>
+
             <button type="button" class="saveButton" onclick="saveFavourite(${JSON.stringify(track).replace(/"/g, '&quot;')})">
                 Save to favourites
+            </button>
+
+            <button type="button" class="ratingsButton" onclick="window.location.href='/Music/Reviews?trackId=${track.id}'">
+                    View ratings
             </button>
         </div>
     `;
@@ -182,8 +186,15 @@ async function saveFavourite(track) {
             body: JSON.stringify(favourite)
         });
 
-        if (!response.ok) {
-            showToast("You may need to log in before saving favourites.", "error");
+        if (response.redirected || response.status === 401 || response.status === 403) {
+            showToast("Log in to favourite.", "error");
+            return;
+        }
+
+        const contentType = response.headers.get("content-type");
+
+        if (!contentType || !contentType.includes("application/json")) {
+            showToast("Log in to favourite.", "error");
             return;
         }
 
@@ -191,7 +202,7 @@ async function saveFavourite(track) {
         showToast(data.message, data.success ? "success" : "error");
     } catch (error) {
         console.error("Save favourite failed:", error);
-        showToast("Could not save favourite.", "error");
+        showToast("Log in to favourite.", "error");
     }
 }
 

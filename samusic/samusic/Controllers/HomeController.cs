@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using samusic.Data;
 using samusic.Models;
 using samusic.Services;
 using System.Diagnostics;
@@ -9,22 +11,26 @@ namespace samusic.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly SpotifyService spotify;
+        private readonly ApplicationDbContext context;
 
-        public HomeController(ILogger<HomeController> logger, SpotifyService spotifyService)
+        public HomeController(ILogger<HomeController> logger, SpotifyService spotifyService, ApplicationDbContext dbContext)
         {
             _logger = logger;
             spotify = spotifyService;
+            context = dbContext;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
+            var randomReviews = context.TrackReviews
+                .ToList()
+                .OrderBy(r => Guid.NewGuid())
+                .Take(6)
+                .ToList();
 
-        public async Task<IActionResult> NewReleases()
-        {
-            var results = await spotify.GetNewReleases();
-            return Content(results, "application/json");
+            ViewBag.RandomReviews = randomReviews;
+
+            return View();
         }
 
         public IActionResult Privacy()

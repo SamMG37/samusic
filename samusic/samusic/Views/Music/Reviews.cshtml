@@ -1,0 +1,97 @@
+﻿@model samusic.Models.TrackReviewsView
+
+@{
+    ViewData["Title"] = "Track Reviews";
+}
+
+<div class="musicPage">
+    <h1>Track Reviews</h1>
+
+    @if (TempData["ReviewMessage"] != null)
+    {
+        <div class="pageMessage successMessage">
+            @TempData["ReviewMessage"]
+        </div>
+    }
+
+    <div class="detailsCard">
+        <h2>@Model.TrackName</h2>
+        <img src="@Model.AlbumImageUrl" alt="@Model.TrackName" />
+        <p><strong>Artist:</strong> @Model.ArtistNames</p>
+        <p><strong>Album:</strong> @Model.AlbumName</p>
+        <p><a href="@Model.SpotifyUrl" target="_blank">Open in Spotify</a></p>
+
+        <div class="reviewSummary">
+            <p><strong>Average rating:</strong> @Model.AverageRating / 5</p>
+            <p><strong>Total reviews:</strong> @Model.ReviewCount</p>
+        </div>
+    </div>
+
+    <section class="contentSection">
+        <h2>Add your review</h2>
+
+        @if (Model.HasReviewed)
+        {
+            <p>You have already reviewed this track.</p>
+        }
+        else
+        {
+            <form asp-action="AddReview" method="post" class="reviewForm">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="spotifyTrackId" value="@Model.SpotifyTrackId" />
+                <input type="hidden" name="trackName" value="@Model.TrackName" />
+                <input type="hidden" name="artistNames" value="@Model.ArtistNames" />
+                <input type="hidden" name="albumName" value="@Model.AlbumName" />
+                <input type="hidden" name="albumImageUrl" value="@Model.AlbumImageUrl" />
+                <input type="hidden" name="spotifyUrl" value="@Model.SpotifyUrl" />
+
+                <div class="starRating">
+                    <input type="radio" id="star5" name="rating" value="5" required>
+                    <label for="star5">★</label>
+
+                    <input type="radio" id="star4" name="rating" value="4">
+                    <label for="star4">★</label>
+
+                    <input type="radio" id="star3" name="rating" value="3">
+                    <label for="star3">★</label>
+
+                    <input type="radio" id="star2" name="rating" value="2">
+                    <label for="star2">★</label>
+
+                    <input type="radio" id="star1" name="rating" value="1">
+                    <label for="star1">★</label>
+                </div>
+
+                <textarea name="comment" rows="5" maxlength="1000" placeholder="Write your review..." class="reviewTextarea"></textarea>
+
+                <button type="submit" class="saveButton">Submit review</button>
+            </form>
+        }
+    </section>
+
+    <section class="contentSection">
+        <h2>All ratings and comments</h2>
+
+        @if (!Model.Reviews.Any())
+        {
+            <p>No reviews yet for this track.</p>
+        }
+        else
+        {
+            <div class="reviewList">
+                @foreach (var review in Model.Reviews)
+                {
+                    <div class="reviewCard">
+                        <h4>@review.UserEmail</h4>
+                        <p class="reviewStars">
+                            @(new string('★', review.Rating))@(new string('☆', 5 - review.Rating))
+                        </p>
+                        <p>@review.Comment</p>
+                        <small>@review.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</small>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>

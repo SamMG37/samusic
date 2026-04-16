@@ -1,16 +1,21 @@
-﻿@{
+﻿@using samusic.Models
+@{
     ViewData["Title"] = "Home";
     bool isLoggedIn = User.Identity?.IsAuthenticated ?? false;
+    var randomReviews = ViewBag.RandomReviews as List<TrackReview> ?? new List<TrackReview>();
 }
 
-<div class="homeHero">
-    <div class="homeHeroContent">
-        <h1>Welcome to Samusic</h1>
+<div class="landingWrapper">
+    <div class="landingCard">
+        <div class="landingTopBar"></div>
+
+        <h1>samusic</h1>
         <p>
-            Discover music by genre, search for tracks, and build your own favourites collection.
+            Discover music by genre, search for tracks, save your favourite songs,
+            and build your own collection.
         </p>
 
-        <div class="homeButtons">
+        <div class="landingButtons">
             <a asp-controller="Music" asp-action="Index" class="homeButton primaryButton">
                 Go to Music
             </a>
@@ -21,21 +26,75 @@
                     Go to your favourites
                 </a>
             }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Login" class="homeButton secondaryButton">
+                    Log In/Register
+                </a>
+            }
         </div>
     </div>
-</div>
 
-@if (isLoggedIn)
-{
-    <section id="recentSection" class="contentSection" style="display: none;">
-        <div class="sectionHeader recentHeader">
-            <h2>Recently searched tracks</h2>
-            <button type="button" id="clearRecentButton" class="clearRecentButton">
-                Clear recent searches
-            </button>
+    <div class="featureGrid">
+        <div class="featureCard">
+            <h3>Search Songs</h3>
+            <p>Look up tracks using the Spotify API and browse music by genre.</p>
         </div>
-        <div id="recentTracks" class="searchResultsGrid"></div>
-    </section>
 
-    <script src="~/js/home.js"></script>
-}
+        <div class="featureCard">
+            <h3>Save Favourites</h3>
+            <p>Build your own list of favourite tracks and access them later.</p>
+        </div>
+
+        <div class="featureCard">
+            <h3>Post your Reviews</h3>
+            <p>Browse music and give it your two cents.</p>
+        </div>
+    </div>
+
+    @if (isLoggedIn)
+    {
+        <section id="recentSection" class="contentSection" style="display: none;">
+            <div class="sectionHeader recentHeader">
+                <h2>Recently searched tracks</h2>
+                <button type="button" id="clearRecentButton" class="clearRecentButton">
+                    Clear recent searches
+                </button>
+            </div>
+            <div id="recentTracks" class="searchResultsGrid"></div>
+        </section>
+
+    @if (randomReviews.Any())
+    {
+        <section class="contentSection">
+            <div class="sectionHeader">
+                <h2 class="communityReviewsTitle">Community Reviews</h2>
+            </div>
+
+            <div class="homeReviewGrid">
+                @foreach (var review in randomReviews)
+                {
+                    <a asp-controller="Music" asp-action="Reviews" asp-route-trackId="@review.SpotifyTrackId" class="homeReviewLink">
+                        <div class="reviewCard">
+                            <h3>@review.TrackName</h3>
+                            <p><strong>Artist:</strong> @review.ArtistNames</p>
+                            <p class="reviewStars">
+                                @(new string('★', review.Rating))@(new string('☆', 5 - review.Rating))
+                            </p>
+
+                            @if (!string.IsNullOrWhiteSpace(review.Comment))
+                            {
+                                <p>@review.Comment</p>
+                            }
+
+                            <small>Reviewed by @review.UserEmail</small>
+                        </div>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+
+        <script src="~/js/home.js"></script>
+
+}</div>

@@ -98,22 +98,24 @@ namespace samusic.Services
             return json;
         }
 
-        public async Task<string> GetNewReleases()
+        public async Task<string> GetTrackById(string trackId)
         {
             var token = await GetToken();
 
             var request = new HttpRequestMessage(
-                HttpMethod.Get, "https://api.spotify.com/v1/browse/new-releases?limit=12"
+                HttpMethod.Get,
+                $"https://api.spotify.com/v1/tracks/{trackId}"
             );
 
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            request.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", token);
 
             var response = await client.SendAsync(request);
             var json = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception("Spotify new releases failed: " + json);
+                throw new Exception("Spotify track lookup failed: " + json);
             }
 
             return json;

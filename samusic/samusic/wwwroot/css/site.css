@@ -1,30 +1,178 @@
 :root {
     --samusic-purple: #7c3aed;
-    --samusic-purple-dark: #6827a1;
-    --samusic-purple-light: #9a57c9;
+    --samusic-purple-dark: #6d28d9;
+    --samusic-purple-light: #ede9fe;
+    --samusic-text: #1f2937;
+    --samusic-muted: #6b7280;
+    --samusic-card: #fcfbf5
 }
+
 
 body {
-    background: #f3f3f3;
+    background: var(--samusic-bg);
+    color: var(--samusic-text);
 }
 
 
-.musicPage {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
+/* Navbar */
+.navbar {
+    background: #c7d7b5 !important;
+    border-bottom: 2px solid var(--samusic-purple) !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
-    .musicPage h1 {
-        font-size: 3rem;
-        margin-bottom: 20px;
+.navbar-brand {
+    font-weight: 700;
+    color: var(--samusic-purple) !important;
+}
+
+.nav-link {
+    color: var(--samusic-text) !important;
+    font-weight: 500;
+}
+
+    .nav-link:hover {
+        color: var(--samusic-purple) !important;
     }
 
-/* Searching for music features/attributes */
+
+/* Home page */
+.landingWrapper {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px 40px 20px;
+}
+
+.landingCard {
+    background: #c7d7b5;
+    border-radius: 18px;
+    padding: 0 40px 40px 40px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    margin-bottom: 35px;
+    border: 2px solid var(--samusic-purple);
+    overflow: hidden;
+}
+
+.landingCard h1 {
+    font-size: 3.2rem;
+    margin-bottom: 16px;
+    color: var(--samusic-purple-dark);
+}
+
+.landingCard p {
+    font-size: 1.1rem;
+    color: var(--samusic-muted);
+    margin-bottom: 28px;
+}
+
+.landingButtons {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.homeButton {
+    display: inline-block;
+    padding: 14px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.primaryButton {
+    background: var(--samusic-purple);
+    color: white;
+}
+
+    .primaryButton:hover {
+        background: var(--samusic-purple-dark);
+        color: white;
+    }
+
+.secondaryButton {
+    background: white;
+    color: var(--samusic-purple);
+    border: 2px solid var(--samusic-purple);
+}
+
+    .secondaryButton:hover {
+        background: var(--samusic-purple-light);
+        color: var(--samusic-purple-dark);
+    }
+
+.featureGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.featureCard {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.06);
+    border: 2px solid var(--samusic-purple);
+    border-top: 8px solid var(--samusic-purple);
+}
+
+    .featureCard h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--samusic-purple-dark);
+    }
+
+    .featureCard p {
+        color: var(--samusic-muted);
+        margin: 0;
+    }
+
+/* General sections */
+.contentSection {
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.sectionHeader h2 {
+    font-size: 1.7rem;
+    color: black;
+}
+
+/* Recent searched tracks */
+.recentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.clearRecentButton {
+    padding: 10px 14px;
+    border: none;
+    background: #7c3aed;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+    .clearRecentButton:hover {
+        background: var(--samusic-purple-dark);
+    }
+
+
+/* Search bar */
 .searchBarArea {
     display: flex;
     gap: 10px;
     margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 #searchBox {
@@ -32,37 +180,31 @@ body {
     max-width: 100%;
     padding: 12px;
     font-size: 1rem;
-    border: 1px solid #bbb;
-    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
 }
 
 #searchButton {
     padding: 12px 18px;
     border: none;
-    background: #111;
+    background: var(--samusic-purple);
     color: white;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
     #searchButton:hover {
-        background: #333;
+        background: var(--samusic-purple-dark);
     }
 
-.contentSection {
-    margin-bottom: 40px;
+
+/* Music Cards functionality */
+.searchResultsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 18px;
 }
 
-.sectionHeader {
-    margin-bottom: 15px;
-}
-
-    .sectionHeader h2 {
-        font-size: 2rem;
-        margin: 0;
-    }
-
-/* Horizontal scroll music cards for genres list */
 .genreRow {
     display: flex;
     gap: 16px;
@@ -76,15 +218,14 @@ body {
     }
 
     .genreRow::-webkit-scrollbar-thumb {
-        background: #999;
+        background: #b9b9b9;
         border-radius: 10px;
     }
 
-/* Music Card featuers */
 .musicCard {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+    background: var(--samusic-card);
+    border-radius: 14px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -100,7 +241,6 @@ body {
         object-fit: cover;
     }
 
-/* Horizontal scroll music cards */
 .carouselCard {
     min-width: 220px;
     max-width: 220px;
@@ -112,13 +252,6 @@ body {
         height: 220px;
     }
 
-/* Search result cards shown */
-.searchResultsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 18px;
-}
-
 .searchCard {
     width: 100%;
     padding-bottom: 12px;
@@ -128,29 +261,32 @@ body {
         height: 220px;
     }
 
-
-  /* Details within card */
 .musicCard h4 {
-    font-size: 1.6rem;
+    font-size: 1.2rem;
     margin: 12px 12px 6px 12px;
-    line-height: 1.25;
+    line-height: 1.3;
+    color: black;
+    transition: color 0.2s ease;
+}
+
+.musicCard:hover h4,
+.musicCard:hover p {
+    color: var(--samusic-purple);
 }
 
 .musicCard p {
     margin: 0 12px;
-    color: #444;
-    font-size: 0.98rem;
+    color: black;
+    font-size: 0.95rem;
 }
 
-#details {
-    margin-top: 10px;
-}
 
+/* Music Cards details */
 .detailsCard {
     max-width: 700px;
-    background: white;
-    border-radius: 14px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.14);
+    background: var(--samusic-card);
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     padding: 24px;
 }
 
@@ -164,7 +300,8 @@ body {
 
     .detailsCard h2 {
         margin-bottom: 20px;
-        font-size: 2.4rem;
+        font-size: 2rem;
+        color: var(--samusic-purple-dark);
     }
 
     .detailsCard p {
@@ -172,23 +309,97 @@ body {
         margin-bottom: 12px;
     }
 
-  /* 'Save to favourites' button feature */
-.saveButton {
+.detailsButtonRow {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
     margin-top: 16px;
+}
+
+/* Ratings button */
+.ratingsButton {
+    margin: 16px;
     padding: 12px 18px;
     border: none;
-    background: #6827a1;
+    background: var(--samusic-purple);
     color: white;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
 }
 
-    .saveButton:hover {
-        background: var(--samusic-purple-light);
+    .ratingsButton:hover {
+        background: var(--samusic-purple-dark);
     }
 
-/* Message pop up when music card is saved */
+
+/* Save to favourites button */
+.saveButton,
+.removeButton {
+    margin-top: 16px;
+    padding: 12px 18px;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+
+.saveButton {
+    background: var(--samusic-purple);
+}
+
+    .saveButton:hover {
+        background: var(--samusic-purple-dark);
+    }
+
+
+.removeButton {
+    background: #d64545;
+}
+
+    .removeButton:hover {
+        background: #b93434;
+    }
+
+
+.favouriteSelectableCard {
+    cursor: pointer;
+}
+
+.detailsLinkButton {
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    color: white !important;
+}
+
+.detailsLinkButton:hover {
+    color: white !important;
+}
+
+/* 'Favourited music card' message */
+.favouriteCardActions {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pageMessage {
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.successMessage {
+    background: #ede9fe;
+    color: #5b21b6;
+    border: 1px solid #c4b5fd;
+}
+
 .toastMessage {
     position: fixed;
     top: 24px;
@@ -219,80 +430,15 @@ body {
         background: #d64545;
     }
 
-/* Button in homepage for 'Go to Music' section 
-    if signed in, shows favourites and searched tracks cards
-*/
-.homeHero {
-    padding: 60px 20px;
-    background: linear-gradient(135deg, #111 0%, #222 100%);
-    color: white;
-    border-radius: 18px;
-    margin: 20px auto 40px auto;
-    max-width: 1200px;
-}
-
-.homeHeroContent {
-    max-width: 700px;
-}
-
-.homeHero h1 {
-    font-size: 3.2rem;
-    margin-bottom: 16px;
-}
-
-.homeHero p {
-    font-size: 1.15rem;
-    line-height: 1.6;
-    margin-bottom: 24px;
-    color: #f1f1f1;
-}
-
-.homeButtons {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-}
-
-.homeButton {
-    display: inline-block;
-    padding: 14px 20px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.2s ease;
-}
-
-.primaryButton {
-    background: var(--samusic-purple);
-    color: white;
-}
-
-    .primaryButton:hover {
-        background: var(--samusic-purple-light);
-        color: white;
-    }
-
-.secondaryButton {
-    background: white;
-    color: #111;
-}
-
-    .secondaryButton:hover {
-        background: var(--samusic-purple-light);
-        color: #111;
-    }
-
-
-/* Feature alteration of login/register area */
-
-
 a {
     color: var(--samusic-purple);
 }
 
     a:hover {
-        color: var(--samusic-purple-light);
+        color: var(--samusic-purple-dark);
     }
+
+
 
 .btn-primary {
     background-color: var(--samusic-purple);
@@ -312,7 +458,7 @@ a {
 }
 
     .btn-outline-primary:hover {
-        background-color: var(--samusic-purple-light);
+        background-color: var(--samusic-purple);
         border-color: var(--samusic-purple);
         color: white;
     }
@@ -328,75 +474,139 @@ a {
     box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.2);
 }
 
-.nav-pills .nav-link.active,
-.page-item.active .page-link {
-    background-color: var(--samusic-purple);
-    border-color: var(--samusic-purple);
+a[href*="/Identity/Account/Manage/TwoFactorAuthentication"],
+a[href*="/Identity/Account/Manage/PersonalData"] {
+    display: none !important;
 }
 
-.link-primary,
-.text-primary {
-    color: var(--samusic-purple) !important;
+
+/* Review of music area */
+.reviewForm {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.06);
+    max-width: 700px;
 }
 
-/* Formatting features in removing favourites button
-    and card action it has
-
-*/
-.removeButton {
-    margin-top: 12px;
-    padding: 10px 14px;
-    border: none;
-    background: #d64545;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.95rem;
+.reviewTextarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    resize: vertical;
 }
 
-    .removeButton:hover {
-        background: #a12f2f;
+.starRating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+    font-size: 2rem;
+}
+
+    .starRating input {
+        display: none;
     }
 
-.favouriteCardActions {
-    margin-top: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    .starRating label {
+        cursor: pointer;
+        color: #d1d5db;
+    }
+
+        .starRating input:checked ~ label,
+        .starRating label:hover,
+        .starRating label:hover ~ label {
+            color: #f59e0b;
+        }
+
+.reviewList {
+    display: grid;
+    gap: 18px;
 }
 
-.pageMessage {
-    margin-bottom: 20px;
-    padding: 14px 18px;
-    border-radius: 10px;
-    font-weight: 500;
+.reviewCard {
+    background: var(--samusic-card);
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.06);
 }
 
-.successMessage {
-    background: #ede9fe;
-    color: #5b21b6;
-    border: 1px solid #c4b5fd;
+.reviewStars {
+    color: #f59e0b;
+    font-size: 1.2rem;
+    margin: 8px 0;
 }
 
-/* Button to remove recent searches, clear up home page space*/
-.recentHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
+.reviewSummary {
+    margin-top: 18px;
 }
 
-.clearRecentButton {
-    padding: 10px 14px;
-    border: none;
-    background: #7c3aed;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.95rem;
+#detailsSection .sectionHeader h2 {
+    color: black;
 }
 
-.clearRecentButton:hover {
-    background: #6d28d9;
+.detailsCard h2 {
+    color: black;
+}
+
+.detailsCard a {
+    color: blue;
+}
+
+    .detailsCard a:hover {
+        color: #0000cc;
+    }
+
+
+.favouriteCardActions a,
+.openSpotifyLink {
+    color: blue !important;
+}
+
+
+/* Home page reviews area */
+.homeReviewGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin-top: 10px;
+}
+
+    .homeReviewGrid .reviewCard h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: black;
+    }
+
+    .homeReviewGrid .reviewCard small {
+        color: var(--samusic-muted);
+    }
+
+
+.homeReviewLink {
+    text-decoration: none;
+    color: inherit !important;
+    display: block;
+}
+
+    .homeReviewLink:hover {
+        text-decoration: none;
+        color: inherit !important;
+    }
+
+    .homeReviewLink .reviewCard {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+    }
+
+        .homeReviewLink .reviewCard:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.10);
+        }
+
+.communityReviewsTitle {
+    color: var(--samusic-purple);
 }

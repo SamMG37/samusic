@@ -4,6 +4,8 @@ using samusic.Data;
 using samusic.Models;
 using samusic.Services;
 using System.Security.Claims;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace samusic.Controllers
 {
@@ -109,6 +111,111 @@ namespace samusic.Controllers
                 .ToList();
 
             return View(favourites);
+        }
+
+        public async Task<IActionResult> Reviews(string trackId)
+        {
+            if (string.IsNullOrWhiteSpace(trackId))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var trackJson = await spotify.GetTrackById(trackId);
+            var trackObject = JObject.Parse(trackJson);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var reviews = context.TrackReviews
+                .Where(r => r.SpotifyTrackId == trackId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
+
+            var model = new TrackReviewsView
+            {
+                SpotifyTrackId = trackId,
+                TrackName = trackObject["name"]?.ToString() ?? "",
+                ArtistNames = string.Join(", ",
+                    trackObject["artists"]?.Select(a => a?["name"]?.ToString()).Where(n => !string.IsNullOrWhiteSpace(n))!
+                    ?? Enumerable.Empty<string>()),
+                AlbumName = trackObject["album"]?["name"]?.ToString() ?? "",
+                AlbumImageUrl = trackObject["album"]?["images"]?.First?["url"]?.ToString() ?? "",
+                SpotifyUrl = trackObject["external_urls"]?["spotify"]?.ToString() ?? "",
+                AverageRating = reviews.Any() ? Math.Round(reviews.Average(r => r.Rating), 1) : 0,
+                ReviewCount = reviews.Count,
+                HasReviewed = userId != null && reviews.Any(r => r.UserId == userId),
+                Reviews = reviews
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddReview(
+            string spotifyTrackId,
+            string trackName,
+            string artistNames,
+            string albumName,
+            string albumImageUrl,
+            string spotifyUrl,
+            int rating,
+            string comment)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            bool alreadyReviewed = context.TrackReviews.Any(r =>
+                r.SpotifyTrackId == spotifyTrackId &&
+                r.UserId == userId);
+
+            if (alreadyReviewed)
+            {
+                TempData["ReviewMessage"] = "You have already reviewed this track.";
+                return RedirectToAction("Reviews", new { trackId = spotifyTrackId });
+            }
+
+            var review = new TrackReview
+            {
+                SpotifyTrackId = spotifyTrackId,
+                TrackName = trackName,
+                ArtistNames = artistNames,
+                AlbumName = albumName,
+                AlbumImageUrl = albumImageUrl,
+                SpotifyUrl = spotifyUrl,
+                Rating = rating,
+                Comment = comment ?? "",
+                UserId = userId,
+                UserEmail = User.Identity?.Name ?? "Unknown user",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            context.TrackReviews.Add(review);
+            context.SaveChanges();
+
+            TempData["ReviewMessage"] = "Review added successfully.";
+
+            return RedirectToAction("Reviews", new { trackId = spotifyTrackId });
+        }
+
+        public IActionResult MyReviews()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var reviews = context.TrackReviews
+                .Where(r => r.UserId == userId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToList();
+
+            return View(reviews);
         }
     }
 }
