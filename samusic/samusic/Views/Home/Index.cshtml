@@ -1,20 +1,25 @@
 ﻿@using samusic.Models
 @{
+    // Sets page title and checks whether the user is logged in
     ViewData["Title"] = "Home";
     bool isLoggedIn = User.Identity?.IsAuthenticated ?? false;
+
+    // Retrieves random reviews passed from the controller
     var randomReviews = ViewBag.RandomReviews as List<TrackReview> ?? new List<TrackReview>();
 }
 
 <div class="landingWrapper">
+    @* Main welcome card shown at top of the page *@
     <div class="landingCard">
         <div class="landingTopBar"></div>
 
         <h1>samusic</h1>
         <p>
             Discover music by genre, search for tracks, save your favourite songs,
-            and build your own collection.
+            and build your own collection
         </p>
 
+        @* Shows different navigation buttons depending on login status *@
         <div class="landingButtons">
             <a asp-controller="Music" asp-action="Index" class="homeButton primaryButton">
                 Go to Music
@@ -35,25 +40,27 @@
         </div>
     </div>
 
+    @* Displays main feature cards on the home page *@
     <div class="featureGrid">
         <div class="featureCard">
             <h3>Search Songs</h3>
-            <p>Look up tracks using the Spotify API and browse music by genre.</p>
+            <p>Look up tracks using the Spotify API and browse music by genre</p>
         </div>
 
         <div class="featureCard">
             <h3>Save Favourites</h3>
-            <p>Build your own list of favourite tracks and access them later.</p>
+            <p>Build your own list of favourite tracks and access them later</p>
         </div>
 
         <div class="featureCard">
             <h3>Post your Reviews</h3>
-            <p>Browse music and give it your two cents.</p>
+            <p>Browse music and give it your two cents</p>
         </div>
     </div>
 
     @if (isLoggedIn)
     {
+        @* Displays recently searched tracks section for logged-in users *@
         <section id="recentSection" class="contentSection" style="display: none;">
             <div class="sectionHeader recentHeader">
                 <h2>Recently searched tracks</h2>
@@ -64,37 +71,40 @@
             <div id="recentTracks" class="searchResultsGrid"></div>
         </section>
 
-    @if (randomReviews.Any())
-    {
-        <section class="contentSection">
-            <div class="sectionHeader">
-                <h2 class="communityReviewsTitle">Community Reviews</h2>
-            </div>
+        @if (randomReviews.Any())
+        {
+            @* Displays selection of random community reviews *@
+            <section class="contentSection">
+                <div class="sectionHeader">
+                    <h2 class="communityReviewsTitle">Community Reviews</h2>
+                </div>
 
-            <div class="homeReviewGrid">
-                @foreach (var review in randomReviews)
-                {
-                    <a asp-controller="Music" asp-action="Reviews" asp-route-trackId="@review.SpotifyTrackId" class="homeReviewLink">
-                        <div class="reviewCard">
-                            <h3>@review.TrackName</h3>
-                            <p><strong>Artist:</strong> @review.ArtistNames</p>
-                            <p class="reviewStars">
-                                @(new string('★', review.Rating))@(new string('☆', 5 - review.Rating))
-                            </p>
+                <div class="homeReviewGrid">
+                    @foreach (var review in randomReviews)
+                    {
+                        @* Each review card links to the full reviews page for that track *@
+                        <a asp-controller="Music" asp-action="Reviews" asp-route-trackId="@review.SpotifyTrackId" class="homeReviewLink">
+                            <div class="reviewCard">
+                                <h3>@review.TrackName</h3>
+                                <p><strong>Artist:</strong> @review.ArtistNames</p>
+                                <p class="reviewStars">
+                                    @(new string('★', review.Rating))@(new string('☆', 5 - review.Rating))
+                                </p>
 
-                            @if (!string.IsNullOrWhiteSpace(review.Comment))
-                            {
-                                <p>@review.Comment</p>
-                            }
+                                @if (!string.IsNullOrWhiteSpace(review.Comment))
+                                {
+                                    <p>@review.Comment</p>
+                                }
 
-                            <small>Reviewed by @review.UserEmail</small>
-                        </div>
-                    </a>
-                }
-            </div>
-        </section>
-    }
+                                <small>Reviewed by @review.UserEmail</small>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
 
+        @* Loads JavaScript file used for recent searches on the home page *@
         <script src="~/js/home.js"></script>
-
-}</div>
+    }
+</div>

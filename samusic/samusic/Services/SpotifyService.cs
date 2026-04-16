@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 
 namespace samusic.Services
 {
+    // Handles communication with the Spotify API
     public class SpotifyService
     {
+        // Creates HTTP client used for API requests
         private readonly HttpClient client = new HttpClient();
 
+        // Stores Spotify client ID and client secret
         private string clientId = "213f0d754f974770833165fa60f6843b";
         private string clientSecret = "a5710ad8c5314647a133cb426c418800";
 
+        // Requests access token from Spotify for API authentication
         public async Task<string> GetToken()
         {
             var auth = Convert.ToBase64String(
@@ -52,6 +55,7 @@ namespace samusic.Services
             return accessToken;
         }
 
+        // Searches Spotify for tracks based on a user query
         public async Task<string> Search(string query)
         {
             var token = await GetToken();
@@ -75,6 +79,7 @@ namespace samusic.Services
             return json;
         }
 
+        // Retrieves tracks from Spotify based on a chosen genre
         public async Task<string> GetTracksByGenre(string genre)
         {
             var token = await GetToken();
@@ -98,6 +103,7 @@ namespace samusic.Services
             return json;
         }
 
+        // Retrieves detailed information for a specific track using its Spotify ID
         public async Task<string> GetTrackById(string trackId)
         {
             var token = await GetToken();
@@ -122,4 +128,3 @@ namespace samusic.Services
         }
     }
 }
-

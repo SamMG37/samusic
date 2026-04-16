@@ -9,28 +9,36 @@ using System.Linq;
 
 namespace samusic.Controllers
 {
+    // Handles requests: searching, browsing genres, saving favourites, managing reviews
     public class MusicController : Controller
     {
+        // Service to interact with Spotify data
         private readonly SpotifyService spotify;
+
+        // Database context to access favourites and reviews
         private readonly ApplicationDbContext context;
 
+        // Constructor for dependency injection
         public MusicController(SpotifyService spotifyService, ApplicationDbContext dbContext)
         {
             spotify = spotifyService;
             context = dbContext;
         }
 
+        // Loads main Music page
         public IActionResult Index()
         {
             return View();
         }
 
+        // Searches Spotify for tracks based on the user's query
         public async Task<IActionResult> Search(string query)
         {
             var results = await spotify.Search(query);
             return Content(results, "application/json");
         }
 
+        // Retrieves tracks from Spotify based on selected genre
         public async Task<IActionResult> Genre(string genre)
         {
             var results = await spotify.GetTracksByGenre(genre);
@@ -40,6 +48,7 @@ namespace samusic.Controllers
         [Authorize]
         [HttpPost]
 
+        // Saves selected song to logged-in user's favourites
         public IActionResult SaveFavourite([FromBody] FavouriteSong favourite)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -49,6 +58,7 @@ namespace samusic.Controllers
                 return Unauthorized();
             }
 
+            // Checks whether song has already been saved by user
             bool alreadySaved = context.FavouriteSongs.Any(f =>
                 f.UserId == userId &&
                 f.SpotifyTrackId == favourite.SpotifyTrackId);
@@ -70,6 +80,8 @@ namespace samusic.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
+
+        // Removes selected favourite from logged-in user's saved list
         public IActionResult RemoveFavourite(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -96,6 +108,8 @@ namespace samusic.Controllers
         }
 
         [Authorize]
+
+        // Loads logged-in user's favourites page
         public IActionResult Favourites()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -105,6 +119,7 @@ namespace samusic.Controllers
                 return Unauthorized();
             }
 
+            // Retrieves user's favourites in most-recent-first order
             var favourites = context.FavouriteSongs
                 .Where(f => f.UserId == userId)
                 .OrderByDescending(f => f.SavedAt)
@@ -113,6 +128,7 @@ namespace samusic.Controllers
             return View(favourites);
         }
 
+        // Loads reviews page for selected track
         public async Task<IActionResult> Reviews(string trackId)
         {
             if (string.IsNullOrWhiteSpace(trackId))
@@ -120,16 +136,19 @@ namespace samusic.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Retrieves detailed track information from Spotify
             var trackJson = await spotify.GetTrackById(trackId);
             var trackObject = JObject.Parse(trackJson);
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            // Retrieves all reviews for the selected track
             var reviews = context.TrackReviews
                 .Where(r => r.SpotifyTrackId == trackId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToList();
 
+            // Combines Spotify track details and database reviews into one view model
             var model = new TrackReviewsView
             {
                 SpotifyTrackId = trackId,
@@ -151,6 +170,8 @@ namespace samusic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+
+        // Adds new review for selected track
         public IActionResult AddReview(
             string spotifyTrackId,
             string trackName,
@@ -168,6 +189,7 @@ namespace samusic.Controllers
                 return Unauthorized();
             }
 
+            // Prevents same user from reviewing same track more than once
             bool alreadyReviewed = context.TrackReviews.Any(r =>
                 r.SpotifyTrackId == spotifyTrackId &&
                 r.UserId == userId);
@@ -201,6 +223,7 @@ namespace samusic.Controllers
             return RedirectToAction("Reviews", new { trackId = spotifyTrackId });
         }
 
+        // Loads logged-in user's own reviews
         public IActionResult MyReviews()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -210,6 +233,7 @@ namespace samusic.Controllers
                 return Unauthorized();
             }
 
+            // Retrieves all reviews made by current user
             var reviews = context.TrackReviews
                 .Where(r => r.UserId == userId)
                 .OrderByDescending(r => r.CreatedAt)
