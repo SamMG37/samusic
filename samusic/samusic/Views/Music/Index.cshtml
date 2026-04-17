@@ -1,15 +1,19 @@
 ﻿@{
+    // Sets page title for the music page
     ViewData["Title"] = "Music";
 }
 
 <div class="musicPage">
+    @* Displays main heading for the music page *@
     <h1>Music Index</h1>
 
+    @* Displays search bar and search button *@
     <div class="searchBarArea">
         <input id="searchBox" placeholder="Search songs" />
         <button type="button" id="searchButton">Search</button>
     </div>
 
+    @* Hidden section to display search results *@
     <section id="searchSection" class="contentSection" style="display: none;">
         <div class="sectionHeader">
             <h2>Search Results</h2>
@@ -17,6 +21,7 @@
         <div id="results" class="searchResultsGrid"></div>
     </section>
 
+    @* Hidden section to display the selected track details *@
     <section id="detailsSection" class="contentSection" style="display: none;">
         <div class="sectionHeader">
             <h2>Selected Track</h2>
@@ -24,6 +29,7 @@
         <div id="details"></div>
     </section>
 
+    @* Displays tracks grouped into genre-based rows *@
     <section class="contentSection">
         <div class="sectionHeader">
             <h2 class="genreSectionTitle">Browse by Genre</h2>
@@ -43,6 +49,8 @@
     </section>
 </div>
 
+@* Toast message for feedback such as saving favourites *@
 <div id="toastMessage" class="toastMessage"></div>
 
+@* Loads JavaScript file for Spotify search and genre features *@
 <script src="~/js/spotify.js"></script>

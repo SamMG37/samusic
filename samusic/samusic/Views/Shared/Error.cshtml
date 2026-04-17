@@ -1,11 +1,14 @@
 ﻿@model ErrorViewModel
 @{
+    // Sets page title for the error page
     ViewData["Title"] = "Error";
 }
 
+@* Displays main error heading and message *@
 <h1 class="text-danger">Error.</h1>
 <h2 class="text-danger">An error occurred while processing your request.</h2>
 
+@* Displays request ID if one is available *@
 @if (Model.ShowRequestId)
 {
     <p>
@@ -13,6 +16,7 @@
     </p>
 }
 
+@* Provides additional information for debugging in development mode *@
 <h3>Development Mode</h3>
 <p>
     Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.

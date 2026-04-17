@@ -1,12 +1,15 @@
 ﻿@model samusic.Models.TrackReviewsView
 
 @{
+    // Sets the page title for the track reviews page
     ViewData["Title"] = "Track Reviews";
 }
 
 <div class="musicPage">
+    @* Displays the main heading for the reviews page *@
     <h1>Track Reviews</h1>
 
+    @* Displays feedback after a review has been added *@
     @if (TempData["ReviewMessage"] != null)
     {
         <div class="pageMessage successMessage">
@@ -14,6 +17,7 @@
         </div>
     }
 
+    @* Displays the selected track information and review summary *@
     <div class="detailsCard">
         <h2>@Model.TrackName</h2>
         <img src="@Model.AlbumImageUrl" alt="@Model.TrackName" />
@@ -30,12 +34,14 @@
     <section class="contentSection">
         <h2>Add your review</h2>
 
+        @* Prevents users from submitting more than one review for the same track *@
         @if (Model.HasReviewed)
         {
             <p>You have already reviewed this track.</p>
         }
         else
         {
+            @* Review form to submit a rating and comment *@
             <form asp-action="AddReview" method="post" class="reviewForm">
                 @Html.AntiForgeryToken()
 
@@ -46,6 +52,7 @@
                 <input type="hidden" name="albumImageUrl" value="@Model.AlbumImageUrl" />
                 <input type="hidden" name="spotifyUrl" value="@Model.SpotifyUrl" />
 
+                @* Star rating input from 1 to 5 *@
                 <div class="starRating">
                     <input type="radio" id="star5" name="rating" value="5" required>
                     <label for="star5">★</label>
@@ -73,12 +80,14 @@
     <section class="contentSection">
         <h2>All ratings and comments</h2>
 
+        @* Displays message if no reviews exist for the track *@
         @if (!Model.Reviews.Any())
         {
             <p>No reviews yet for this track.</p>
         }
         else
         {
+            @* Displays all reviews submitted for the selected track *@
             <div class="reviewList">
                 @foreach (var review in Model.Reviews)
                 {

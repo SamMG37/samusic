@@ -1,12 +1,15 @@
 ﻿@model List<samusic.Models.FavouriteSong>
 
 @{
+    // Sets page title for the favourites page
     ViewData["Title"] = "My Favourites";
 }
 
 <div class="musicPage">
+    @* Displays main page heading *@
     <h1>My Favourites</h1>
 
+    @* Displays success message when a favourite has been removed *@
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="pageMessage successMessage">
@@ -14,6 +17,7 @@
         </div>
     }
 
+    @* Hidden section used to display details of the selected favourite *@
     <section id="selectedFavouriteSection" class="contentSection" style="display: none;">
         <div class="sectionHeader">
             <h2>Selected Favourite</h2>
@@ -21,12 +25,14 @@
         <div id="selectedFavouriteDetails"></div>
     </section>
 
+    @* Displays message if the user has not saved any songs *@
     @if (!Model.Any())
     {
         <p>You have not saved any songs yet.</p>
     }
     else
     {
+        @* Displays all favourited songs as selectable cards *@
         <div class="searchResultsGrid">
             @foreach (var song in Model)
             {
@@ -47,6 +53,7 @@
                     <p><strong>Album:</strong> @song.AlbumName</p>
                     <p><strong>Release date:</strong> @song.ReleaseDate</p>
 
+                    @* Provides actions for opening the track in Spotify or removing it from favourites *@
                     <div class="favouriteCardActions" onclick="event.stopPropagation();">
                         <a href="@song.SpotifyUrl" target="_blank" class="openSpotifyLink">
                             Open in Spotify
@@ -65,4 +72,5 @@
     }
 </div>
 
+@* Loads JavaScript file for selecting favourite cards *@
 <script src="~/js/favourites.js"></script>

@@ -4,9 +4,56 @@
     --samusic-purple-light: #ede9fe;
     --samusic-text: #1f2937;
     --samusic-muted: #6b7280;
-    --samusic-card: #fcfbf5
+    --samusic-card: #fcfbf5;
+    --samusic-bg: #dfebe4;
+    --samusic-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+body,
+input,
+button,
+textarea,
+select,
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+span,
+li {
+    font-family: var(--samusic-font);
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--samusic-bg);
+    color: var(--samusic-text);
+}
+
+main {
+    flex: 1;
+    display: block;
+}
+
+.footer {
+    background: #cfe6d4;
+    border-top: 2px solid var(--samusic-purple);
+    color: var(--samusic-text);
+    width: 100%;
+    padding: 14px 0;
+    margin-top: auto;
+}
 
 body {
     background: var(--samusic-bg);
@@ -16,7 +63,7 @@ body {
 
 /* Navbar */
 .navbar {
-    background: #c7d7b5 !important;
+    background: #CCEBD9 !important;
     border-bottom: 2px solid var(--samusic-purple) !important;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
@@ -44,7 +91,7 @@ body {
 }
 
 .landingCard {
-    background: #c7d7b5;
+    background: #CCEBD9;
     border-radius: 18px;
     padding: 0 40px 40px 40px;
     text-align: center;
@@ -609,4 +656,12 @@ a[href*="/Identity/Account/Manage/PersonalData"] {
 
 .communityReviewsTitle {
     color: var(--samusic-purple);
+}
+
+/* Make selected account/manage tab purple instead of blue */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: var(--samusic-purple) !important;
+    border-color: var(--samusic-purple) !important;
+    color: white !important;
 }
