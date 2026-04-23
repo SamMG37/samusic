@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using samusic.Data;
 using samusic.Models;
 using samusic.Services;
